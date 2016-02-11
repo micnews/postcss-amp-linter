@@ -24,5 +24,8 @@
     "babel-preset-es2015": "^6.5.0",
     "semistandard": "^7.0.5",
     "snazzy": "^2.0.1"
+  },
+  "dependencies": {
+    "postcss": "^5.0.15"
   }
 }
