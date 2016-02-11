@@ -64,12 +64,18 @@ test('!important is not allowed', t => {
   });
 });
 
-test('"behavior" & "-moz-binding" properties are not allowed', t => {
-  const input = 'div { behavior: url(http://mic.com); -moz-binding: url(http://mic.com)}';
+test('"behavior", "-moz-binding" & "filter" properties are not allowed', t => {
+  const input = `div { behavior:
+    url(http://mic.com);
+    -moz-binding: url(http://mic.com);
+    filter: grayscale(1)
+  }`;
   const expectedText1 = 'Property "behavior" is not allowed';
   const expectedText2 = 'Property "-moz-binding" is not allowed';
+  const expectedText3 = 'Property "filter" is not allowed';
   return process(input, actual => {
     t.is(actual[0] && actual[0].text, expectedText1);
     t.is(actual[1] && actual[1].text, expectedText2);
+    t.is(actual[2] && actual[2].text, expectedText3);
   });
 });

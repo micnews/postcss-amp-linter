@@ -1,6 +1,9 @@
 import postcss from 'postcss';
 import selectorParser from 'postcss-selector-parser';
 import startsWith from 'lodash.startswith';
+import Set from 'es6-set';
+
+const bannedProperties = new Set(['behavior', '-moz-binding', 'filter']);
 
 const validatePseudo = (nodes, warn) => {
   let pseudo = false;
@@ -53,12 +56,8 @@ const validateDeclaration = ({important, prop}, warn) => {
     warn('Value can not include !important');
   }
 
-  if (prop === 'behavior') {
-    warn('Property "behavior" is not allowed');
-  }
-
-  if (prop === '-moz-binding') {
-    warn('Property "-moz-binding" is not allowed');
+  if (bannedProperties.has(prop)) {
+    warn(`Property "${prop}" is not allowed`);
   }
 };
 
