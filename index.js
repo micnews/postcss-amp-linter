@@ -48,9 +48,17 @@ const validateRule = (rule, warn) => {
   }).process(rule.selector);
 };
 
-const validateDeclaration = ({important}, warn) => {
+const validateDeclaration = ({important, prop}, warn) => {
   if (important) {
     warn('Value can not include !important');
+  }
+
+  if (prop === 'behavior') {
+    warn('Property "behavior" is not allowed');
+  }
+
+  if (prop === '-moz-binding') {
+    warn('Property "-moz-binding" is not allowed');
   }
 };
 

@@ -63,3 +63,13 @@ test('!important is not allowed', t => {
     t.is(actual[0] && actual[0].text, expectedText);
   });
 });
+
+test('"behavior" & "-moz-binding" properties are not allowed', t => {
+  const input = 'div { behavior: url(http://mic.com); -moz-binding: url(http://mic.com)}';
+  const expectedText1 = 'Property "behavior" is not allowed';
+  const expectedText2 = 'Property "-moz-binding" is not allowed';
+  return process(input, actual => {
+    t.is(actual[0] && actual[0].text, expectedText1);
+    t.is(actual[1] && actual[1].text, expectedText2);
+  });
+});
