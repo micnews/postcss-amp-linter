@@ -6,6 +6,10 @@ const validateRule = (rule, result) => {
   if (selector.indexOf('*') !== -1) {
     rule.warn(result, 'The universal selector (*) is not allowed in AMP.');
   }
+
+  if (selector.indexOf(':not(') !== -1) {
+    rule.warn(result, ':not() is not allowed in AMP.');
+  }
 };
 
 const validateDeclaration = (declaration, result) => {
