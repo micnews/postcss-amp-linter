@@ -2,68 +2,67 @@ import postcss from 'postcss';
 import selectorParser from 'postcss-selector-parser';
 import startsWith from 'lodash.startswith';
 
-const validateRule = (rule, result) => {
-  const validatePseudo = nodes => {
-    let pseudo = false;
-    let ampTagname = false;
-    let noneTag = false;
+const validatePseudo = (nodes, warn) => {
+  let pseudo = false;
+  let ampTagname = false;
+  let noneTag = false;
 
-    nodes.forEach(({type, value}) => {
-      pseudo = pseudo || type === 'pseudo';
-      ampTagname = ampTagname || type === 'tag' && startsWith(value, 'amp-');
-      noneTag = noneTag || type !== 'pseudo' && type !== 'tag' && type !== 'combinator';
-    });
+  nodes.forEach(({type, value}) => {
+    pseudo = pseudo || type === 'pseudo';
+    ampTagname = ampTagname || type === 'tag' && startsWith(value, 'amp-');
+    noneTag = noneTag || type !== 'pseudo' && type !== 'tag' && type !== 'combinator';
+  });
 
-    if (pseudo && noneTag) {
-      rule.warn(result, 'Pseudo-selectors, pseudo-classes and pseudo-elements are only allowed in tag names.');
-    }
+  if (pseudo && noneTag) {
+    warn('Pseudo-selectors, pseudo-classes and pseudo-elements are only allowed in tag names.');
+  }
 
-    if (pseudo && ampTagname) {
-      rule.warn(result, 'Pseudo-selectors, pseudo-classes and pseudo-elements are not allowed in amp-tags.');
-    }
-  };
+  if (pseudo && ampTagname) {
+    warn('Pseudo-selectors, pseudo-classes and pseudo-elements are not allowed in amp-tags.');
+  }
+};
 
-  const validateSelector = ({type, value, nodes}) => {
-    if (type === 'universal') {
-      rule.warn(result, 'The universal selector (*) is not allowed in AMP.');
-    }
-
-    if (type === 'pseudo' && value === ':not') {
-      rule.warn(result, ':not() is not allowed in AMP.');
-    }
-
-    if (type === 'selector') {
-      validatePseudo(nodes);
-    }
-
-    if (type === 'class' && startsWith(value, '-amp-')) {
-      rule.warn(result, 'Classes may not start with "-amp-"');
-    }
-
-    if(type === 'tag' && startsWith(value, 'i-amp')) {
-      rule.warn(result, 'Tags may not start with "i-amp"');
-    }
-  };
-
+const validateRule = (rule, warn) => {
   selectorParser(selectorAST => {
-    selectorAST.eachInside(validateSelector);
+    selectorAST.eachInside(({type, value, nodes}) => {
+      if (type === 'universal') {
+        warn('The universal selector (*) is not allowed in AMP.');
+      }
+
+      if (type === 'pseudo' && value === ':not') {
+        warn(':not() is not allowed in AMP.');
+      }
+
+      if (type === 'selector') {
+        validatePseudo(nodes, warn);
+      }
+
+      if (type === 'class' && startsWith(value, '-amp-')) {
+        warn('Classes may not start with "-amp-"');
+      }
+
+      if (type === 'tag' && startsWith(value, 'i-amp')) {
+        warn('Tags may not start with "i-amp"');
+      }
+    });
   }).process(rule.selector);
 };
 
-const validateDeclaration = (declaration, result) => {
-
+const validateDeclaration = (declaration, warn) => {
 };
 
-const plugin = (css, result) => {
+const walk = (css, result) => {
   css.walk(node => {
+    const warn = (msg) => node.warn(result, msg);
+
     if (node.type === 'rule') {
-      validateRule(node, result);
+      validateRule(node, warn);
     }
 
-    if (node.type === 'node') {
-      validateDeclaration(node, result);
+    if (node.type === 'decl') {
+      validateDeclaration(node, warn);
     }
   });
 };
 
-module.exports = postcss.plugin('postcss-amp-linter', () => plugin);
+module.exports = postcss.plugin('postcss-amp-linter', () => walk);
