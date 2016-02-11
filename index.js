@@ -39,6 +39,10 @@ const validateRule = (rule, result) => {
     if (type === 'class' && startsWith(value, '-amp-')) {
       rule.warn(result, 'Classes may not start with "-amp-"');
     }
+
+    if(type === 'tag' && startsWith(value, 'i-amp')) {
+      rule.warn(result, 'Tags may not start with "i-amp"');
+    }
   };
 
   selectorParser(selectorAST => {

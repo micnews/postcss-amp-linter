@@ -47,3 +47,11 @@ test('disallowed class-names', t => {
     t.is(actual[0] && actual[0].text, expectedText);
   });
 });
+
+test('disallowed tag-names', t => {
+  const input = 'i-amp-sizer { background: red; }';
+  const expectedText = 'Tags may not start with "i-amp"';
+  return process(input, actual => {
+    t.is(actual[0] && actual[0].text, expectedText);
+  });
+});
