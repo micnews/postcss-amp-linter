@@ -46,3 +46,13 @@ test('pseudo-selectors, pseudo-classes and pseudo-elements (disallowed)', t => {
       t.is(actual.warnings().length, 5);
     });
 });
+
+test('disallowed class-names', t => {
+  const input = '.-amp-replaced-content { background: red; }';
+  const expectedText = 'Classes may not start with "-amp-"';
+  return process(input)
+    .then(actual => {
+      t.is(actual.warnings().length, 1);
+      t.is(actual.warnings()[0].text, expectedText);
+    });
+});

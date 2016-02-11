@@ -23,17 +23,21 @@ const validateRule = (rule, result) => {
     }
   };
 
-  const validateSelector = selector => {
-    if (selector.type === 'universal') {
+  const validateSelector = ({type, value, nodes}) => {
+    if (type === 'universal') {
       rule.warn(result, 'The universal selector (*) is not allowed in AMP.');
     }
 
-    if (selector.type === 'pseudo' && selector.value === ':not') {
+    if (type === 'pseudo' && value === ':not') {
       rule.warn(result, ':not() is not allowed in AMP.');
     }
 
-    if (selector.type === 'selector') {
-      validatePseudo(selector.nodes);
+    if (type === 'selector') {
+      validatePseudo(nodes);
+    }
+
+    if (type === 'class' && startsWith(value, '-amp-')) {
+      rule.warn(result, 'Classes may not start with "-amp-"');
     }
   };
 
