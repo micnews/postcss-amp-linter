@@ -1,15 +1,20 @@
 import postcss from 'postcss';
+import selectorParser from 'postcss-selector-parser';
 
 const validateRule = (rule, result) => {
-  const {selector} = rule;
+  const validateSelector = selector => {
+    if (selector.type === 'universal') {
+      rule.warn(result, 'The universal selector (*) is not allowed in AMP.');
+    }
 
-  if (selector.indexOf('*') !== -1) {
-    rule.warn(result, 'The universal selector (*) is not allowed in AMP.');
-  }
+    if (selector.type === 'pseudo' && selector.value === ':not') {
+      rule.warn(result, ':not() is not allowed in AMP.');
+    }
+  };
 
-  if (selector.indexOf(':not(') !== -1) {
-    rule.warn(result, ':not() is not allowed in AMP.');
-  }
+  selectorParser(selectorAST => {
+    selectorAST.eachInside(validateSelector);
+  }).process(rule.selector);
 };
 
 const validateDeclaration = (declaration, result) => {
