@@ -1,0 +1,26 @@
+{
+  "name": "postcss-amp-linter",
+  "version": "0.0.0",
+  "description": "postcss linter for AMP",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "ava",
+    "prepublish": "mkdir -p dist && babel index.js --out-file dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/micnews/postcss-amp-linter.git"
+  },
+  "author": "mic.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/micnews/postcss-amp-linter/issues"
+  },
+  "homepage": "https://github.com/micnews/postcss-amp-linter#readme",
+  "devDependencies": {
+    "ava": "^0.11.0",
+    "babel-cli": "^6.5.1",
+    "babel-core": "^6.5.1",
+    "babel-preset-es2015": "^6.5.0"
+  }
+}
