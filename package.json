@@ -4,7 +4,7 @@
   "description": "postcss linter for AMP",
   "main": "dist/index.js",
   "scripts": {
-    "test": "ava",
+    "test": "ava && semistandard | snazzy",
     "prepublish": "mkdir -p dist && babel index.js --out-file dist/index.js"
   },
   "repository": {
@@ -21,6 +21,8 @@
     "ava": "^0.11.0",
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.1",
-    "babel-preset-es2015": "^6.5.0"
+    "babel-preset-es2015": "^6.5.0",
+    "semistandard": "^7.0.5",
+    "snazzy": "^2.0.1"
   }
 }
