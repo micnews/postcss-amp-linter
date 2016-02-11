@@ -55,3 +55,11 @@ test('disallowed tag-names', t => {
     t.is(actual[0] && actual[0].text, expectedText);
   });
 });
+
+test('!important is not allowed', t => {
+  const input = 'div { background: red !important; }';
+  const expectedText = 'Value can not include !important';
+  return process(input, actual => {
+    t.is(actual[0] && actual[0].text, expectedText);
+  });
+});

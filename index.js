@@ -48,7 +48,10 @@ const validateRule = (rule, warn) => {
   }).process(rule.selector);
 };
 
-const validateDeclaration = (declaration, warn) => {
+const validateDeclaration = ({important}, warn) => {
+  if (important) {
+    warn('Value can not include !important');
+  }
 };
 
 const walk = (css, result) => {
