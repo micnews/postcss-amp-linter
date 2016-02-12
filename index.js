@@ -2,6 +2,7 @@ import postcss from 'postcss';
 import selectorParser from 'postcss-selector-parser';
 import startsWith from 'lodash.startswith';
 import Set from 'es6-set';
+import includes from 'lodash.includes';
 
 const bannedProperties = new Set(['behavior', '-moz-binding', 'filter']);
 
@@ -51,13 +52,17 @@ const validateRule = (rule, warn) => {
   }).process(rule.selector);
 };
 
-const validateDeclaration = ({important, prop}, warn) => {
+const validateDeclaration = ({important, prop, value}, warn) => {
   if (important) {
     warn('Value can not include !important');
   }
 
   if (bannedProperties.has(prop)) {
     warn(`Property "${prop}" is not allowed`);
+  }
+
+  if (startsWith(prop, 'overflow') && (includes(value, 'auto') || includes(value, 'scroll'))) {
+    warn(`Property "${prop}" === "${value}" is not allowed`);
   }
 };
 
